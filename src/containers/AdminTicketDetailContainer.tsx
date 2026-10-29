@@ -193,10 +193,10 @@ export default function AdminTicketDetailContainer({
               <h1 className="mt-2 text-2xl font-bold text-slate-900">
                 {ticket.subject}
               </h1>
-           <p>
+          <p>
   Submitted by{" "}
   {typeof ticket.author === "object" && ticket.author !== null
-    ? ticket.author.name
+    ? (ticket.author as { name?: string }).name || "Unknown Author"
     : ticket.author || "Unknown Author"}
 </p>
             </div>
