@@ -1,4 +1,6 @@
+
 "use client";
+
 import Link from "next/link";
 
 export default function Footer() {
@@ -10,15 +12,21 @@ export default function Footer() {
         </Link>
 
         <p className="text-sm text-slate-500">
-          © {new Date().getFullYear()} BookLeaf Publishing. All rights reserved.
+          © 2026 BookLeaf Publishing. All rights reserved.
         </p>
 
         <div className="flex gap-5 text-sm">
-          <Link href="/author/login" className="text-slate-600 hover:text-emerald-800">
+          <Link
+            href="/author/login"
+            className="text-slate-600 hover:text-emerald-800"
+          >
             Author Login
           </Link>
 
-          <Link href="/admin/login" className="text-slate-600 hover:text-emerald-800">
+          <Link
+            href="/admin/login"
+            className="text-slate-600 hover:text-emerald-800"
+          >
             Admin Login
           </Link>
         </div>
