@@ -1,7 +1,7 @@
 
 import { apiRequest } from "@/src/lib/api";
-import type { AuthorBook } from "@/src/types/author";
-import type { SupportTicket } from "@/src/types/author";
+import type { AuthorBook, SupportTicket } from "@/src/types/author";
+
 type BookApiResponse = {
   id: number;
   bookCode: string;
@@ -23,6 +23,8 @@ export const demoTickets: SupportTicket[] = [
     category: "Royalty & Payments",
     status: "In Progress",
     date: "26 Oct 2026",
+    description: "Request for an update on pending royalty payment.",
+    priority: "Medium",
   },
   {
     id: "TKT-1002",
@@ -30,8 +32,11 @@ export const demoTickets: SupportTicket[] = [
     category: "Distribution & Availability",
     status: "Open",
     date: "24 Oct 2026",
+    description: "Request for an update on book distribution.",
+    priority: "Low",
   },
 ];
+
 function mapBook(book: BookApiResponse): AuthorBook {
   return {
     id: String(book.id),
@@ -52,7 +57,6 @@ export const authorService = {
       method: "GET",
     });
 
-    const res=await response.map(mapBook);
-    return res
+    return response.map(mapBook);
   },
 };

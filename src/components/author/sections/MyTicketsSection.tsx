@@ -3,16 +3,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { AuthorBook, SupportTicket } from "@/src/types/author";
+import { authorService } from "@/src/services/author.service";
 import { ticketService } from "@/src/services/ticket.service";
 import TicketCard from "../components/TicketCard";
 import SubmitQuerySection from "./SubmitQuerySection";
 
-type Props = {
-  books: AuthorBook[];
-  onNewTicket?: () => void;
-};
-
-export default function MyTicketsSection({ books }: Props) {
+export default function MyTicketsSection() {
+  const [books, setBooks] = useState<AuthorBook[]>([]);
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -35,7 +32,26 @@ export default function MyTicketsSection({ books }: Props) {
   }, []);
 
   useEffect(() => {
+    let active = true;
+
+    async function loadBooks() {
+      try {
+        const result = await authorService.getMyBooks();
+
+        if (active) {
+          setBooks(result);
+        }
+      } catch (err) {
+        console.error("Failed to load author books:", err);
+      }
+    }
+
+    void loadBooks();
     void loadTickets();
+
+    return () => {
+      active = false;
+    };
   }, [loadTickets]);
 
   useEffect(() => {
@@ -136,7 +152,6 @@ export default function MyTicketsSection({ books }: Props) {
         </div>
       </section>
 
-      {/* New Ticket Modal */}
       {isModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-3 backdrop-blur-sm sm:p-6"
@@ -146,35 +161,35 @@ export default function MyTicketsSection({ books }: Props) {
             }
           }}
         >
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-3">
-  <div className="relative max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl sm:p-6">
-    <button
-      type="button"
-      onClick={() => setIsModalOpen(false)}
-      aria-label="Close modal"
-      className="absolute right-5 top-5 rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
-    >
-      ✕
-    </button>
+          <div className="relative max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl sm:p-6">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              aria-label="Close modal"
+              className="absolute right-5 top-5 rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            >
+              ✕
+            </button>
 
-    <h2 className="pr-10 text-xl font-semibold tracking-tight text-slate-900">
-      Create New Ticket
-    </h2>
-    <p className="mt-1 text-sm text-slate-500">
-      Tell us how we can help you.
-    </p>
+            <h2 className="pr-10 text-xl font-semibold tracking-tight text-slate-900">
+              Create New Ticket
+            </h2>
 
-    <div className="mt-5 border-t border-slate-100 pt-5">
-      <SubmitQuerySection
-        books={books ?? []}
-        onTicketCreated={async () => {
-          await loadTickets();
-          setIsModalOpen(false);
-        }}
-      />
-    </div>
-  </div>
-</div>
+            <p className="mt-1 text-sm text-slate-500">
+              Tell us how we can help you.
+            </p>
+
+            <div className="mt-5 border-t border-slate-100 pt-5">
+              <SubmitQuerySection
+                books={books}
+                onTicketCreated={async () => {
+                  setIsModalOpen(false);
+                  setLoading(true);
+                  await loadTickets();
+                }}
+              />
+            </div>
+          </div>
         </div>
       )}
     </>

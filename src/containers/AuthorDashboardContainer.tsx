@@ -19,11 +19,11 @@ const navItems: AuthorTab[] = [
 ];
 
 export default function AuthorDashboardContainer() {
-  
   const [activeTab, setActiveTab] = useState<AuthorTab>("Overview");
   const [books, setBooks] = useState<AuthorBook[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   useEffect(() => {
     let active = true;
 
@@ -33,6 +33,7 @@ export default function AuthorDashboardContainer() {
         setError(null);
 
         const result = await authorService.getMyBooks();
+
         if (active) {
           setBooks(result);
         }
@@ -84,6 +85,7 @@ export default function AuthorDashboardContainer() {
       </div>
     );
   }
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <div className="flex min-h-screen">
@@ -92,6 +94,7 @@ export default function AuthorDashboardContainer() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-800 text-xl font-bold text-white">
               B
             </div>
+
             <div>
               <p className="text-lg font-bold">BookLeaf</p>
               <p className="text-xs text-slate-500">Author Portal</p>
@@ -153,12 +156,7 @@ export default function AuthorDashboardContainer() {
               />
             )}
 
-            {activeTab === "My Tickets" && (
-              <MyTicketsSection
-                tickets={demoTickets}
-                onNewTicket={() => navigate("Submit Query")}
-              />
-            )}
+            {activeTab === "My Tickets" && <MyTicketsSection />}
 
             {activeTab === "Submit Query" && (
               <SubmitQuerySection books={books} />
